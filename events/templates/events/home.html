@@ -7,9 +7,6 @@ Home
 
 {%block content%}
 <section>
-
-</section>
-<section>
     <div class="container">
         <div class="section-header d-flex justify-content-between align-items-center mb-5">
             <h4> Categories</h4>
@@ -59,11 +56,12 @@ Home
                     <div class="post-entry-1 lg">
                         <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
                                 class="img-fluid"></a>
-                        <div class="post-meta"><span class="date"> <a
-                                    href="{% url 'events:categorylist' item.category.slug %}">
-                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
-                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
-                                <br>{{item.event_date}} </span>
+                        <div class="post-meta">
+                            <span class="date"> <a href="{% url 'events:categorylist' item.category.slug %}">{{item.category}}</a></span>
+                            <span class="mx-1"> &bullet;</span>
+                            <span><a href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span>
+                            <span class="mx-1"> &bullet;</span> <br>
+                            <span> <a href="{% url 'events:event_date_view' year=item.event_date.year month=item.event_date.month day=item.event_date.day %}"> {{item.event_date}}</a></span>
                         </div>
                         <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
                         <div class="d-flex align-items-center author">
@@ -118,11 +116,13 @@ Home
                     <div class="post-entry-1 lg">
                         <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
                                 class="img-fluid"></a>
-                        <div class="post-meta"><span class="date"> <a
-                                    href="{% url 'events:categorylist' item.category.slug %}">
-                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
-                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
-                                <br>{{item.event_date}} </span>
+                        <div class="post-meta"><span class="date"> <span class="date"> <a href="{% url 'events:categorylist' item.category.slug %}">{{item.category}}</a></span>
+                        <span class="mx-1"> &bullet;</span>
+                        <span><a href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span>
+                        <span class="mx-1"> &bullet;</span> <br>
+                        <span> <a
+                                href="{% url 'events:event_date_view' year=item.event_date.year month=item.event_date.month day=item.event_date.day %}">
+                                {{item.event_date}}</a></span>
                         </div>
                         <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
                         <div class="d-flex align-items-center author">
@@ -219,11 +219,14 @@ Home
                     <div class="post-entry-1 lg">
                         <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
                                 class="img-fluid"></a>
-                        <div class="post-meta"><span class="date"> <a
-                                    href="{% url 'events:categorylist' item.category.slug %}">
-                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
-                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
-                                <br>{{item.event_date}} </span>
+                        <div class="post-meta"><span class="date"> 
+                            <span class="date"> <a href="{% url 'events:categorylist' item.category.slug %}">{{item.category}}</a></span>
+                            <span class="mx-1"> &bullet;</span>
+                            <span><a href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span>
+                            <span class="mx-1"> &bullet;</span> <br>
+                            <span> <a
+                                href="{% url 'events:event_date_view' year=item.event_date.year month=item.event_date.month day=item.event_date.day %}">
+                                {{item.event_date}}</a></span>
                         </div>
                         <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
                         <div class="d-flex align-items-center author">
@@ -280,11 +283,13 @@ Home
                     <div class="post-entry-1 lg">
                         <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
                                 class="img-fluid"></a>
-                        <div class="post-meta"><span class="date"> <a
-                                    href="{% url 'events:categorylist' item.category.slug %}">
-                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
-                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
-                                <br>{{item.event_date}} </span>
+                        <div class="post-meta"><span class="date"> <span class="date"> <a href="{% url 'events:categorylist' item.category.slug %}">{{item.category}}</a></span>
+                        <span class="mx-1"> &bullet;</span>
+                        <span><a href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span> <br>
+                        <span class="mx-1"> &bullet;</span>
+                        <span> <a
+                                href="{% url 'events:event_date_view' year=item.event_date.year month=item.event_date.month day=item.event_date.day %}">
+                                {{item.event_date}}</a></span></span>
                         </div>
                         <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
                         <div class="d-flex align-items-center author">

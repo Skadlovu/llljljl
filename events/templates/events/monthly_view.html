@@ -1,0 +1,121 @@
+{% extends 'base.html'%}
+{%load static%}
+
+{% load tz %} {# Load the time zone template tags #}
+{% load humanize %} {# Load the humanize template tags for ordinal numbers #}
+{% get_current_timezone as TIME_ZONE %} {# Get the current time zone #}
+{% now "Y-m-d H:i:s" as current_datetime %} {# Get the current date and time #}
+{% now "F" as current_month_name %} {# Get the full name of the current month #}
+
+{% block title %}
+Events for {%if current_month == 1 %} January
+{%elif current_month == 2 %} February
+{%elif current_month == 3 %} March
+{%elif current_month == 4 %} April
+{%elif current_month == 5 %} May
+{%elif current_month == 6 %} June
+{%elif current_month == 7 %} July
+{%elif current_month == 8 %} August
+{%elif current_month == 9 %} September
+{%elif current_month == 10 %} October
+{%elif current_month == 11 %} November
+{%else%} December {%endif%} {{ current_year }}
+{% endblock %}
+{%block content%}
+
+<section>
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-5">
+            <h4>
+                Events for {%if current_month == 1 %} January
+                {%elif current_month == 2 %} February
+                {%elif current_month == 3 %} March
+                {%elif current_month == 4 %} April
+                {%elif current_month == 5 %} May
+                {%elif current_month == 6 %} June
+                {%elif current_month == 7 %} July
+                {%elif current_month == 8 %} August
+                {%elif current_month == 9 %} September
+                {%elif current_month == 10 %} October
+                {%elif current_month == 11 %} November
+                {%else%} December {%endif%} {{current_month_name}}  {{ current_year }}</h4>
+                <div>
+                        <div class="pagination">
+                            <span class="step-links">
+                                <button style="background-color: rgb(162, 200, 223);color: white;"> <a
+                                        href="{% url 'events:monthly_view' %}?month={{ current_month|add:'-1' }}&year={{ current_year }}">Previous
+                                        Month</a> </button>
+                                <button style="background-color: rgb(162, 200, 223);color: white;"> <a
+                                        href="{% url 'events:monthly_view' %}?month={{ current_month|add:'1' }}&year={{ current_year }}">Next
+                                        Month</a> </button>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                               
+                            </span>
+                        
+                        </div>
+                </div>
+            <div>
+                <a href="/"> <i class="bi bi-houses-fill"></i></a>
+            </div>
+        </div>
+        
+        <div class="row">
+            {%if events %}
+            {% for item in events %}
+            <div class="col-lg-3">
+                <div class="post-entry-1 lg">
+                    <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                            class="img-fluid"></a>
+                    <div class="post-meta"><span class="date"> <a
+                                href="{% url 'events:categorylist' item.category.slug %}">
+                                {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
+                                href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
+                            <br>{{item.event_date}} </span>
+                    </div>
+                    <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                    <div class="d-flex align-items-center author">
+                        <div class="photo">
+                            <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img
+                                    src="{{ item.uploaded_by.profile.image.url }}" alt="" class="img-fluid"></a>
+                        </div>
+                        <div class="name">
+                            <a href="">
+                                <h3 class="m-0 p-0"> <a
+                                        href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}}
+                                    </a></h3>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+           
+           
+            {%endfor%}
+            {%else%}
+            <p> No events available</p>
+            {%endif%}
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if events.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ events.previous_page_number }}">previous</a>
+                {% endif %}
+
+                
+
+                {% if events.has_next %}
+                <a href="?page={{ events.next_page_number }}">next</a>
+                <a href="?page={{events.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

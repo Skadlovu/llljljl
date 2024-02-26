@@ -1,18 +1,17 @@
 {% extends 'base.html'%}
-{%load static%}
 {% load crispy_forms_tags %}
-{% block title %}
-{{user.username}}
-{% endblock %}
+{% load static %}
 
-{%block content%}
+{% block title %}
+Events on {{ events.0.event_date|date:"F d, Y" }}
+{% endblock %}
+{% block content%}
+
 
 <section>
     <div class="container">
         <div class="section-header d-flex justify-content-between align-items-center mb-5">
-            <h4> Events posted by {{user.username}}   <br>  Joined on: {{ user.date_joined|date:"F j, Y H:i" }}
-            <br> {{ user.last_seen|date:"F j, Y H:i" }}
-            </h4>
+            <h4>Events on {{ events.0.event_date|date:"F d, Y" }}</h4>
             <div>
                 <a href="/"> <i class="bi bi-houses-fill"></i></a>
             </div>
@@ -33,11 +32,12 @@
                     <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
                     <div class="d-flex align-items-center author">
                         <div class="photo">
-                            <a href=""> </a>
+                            <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt=""
+                                    class="img-fluid"></a>
                         </div>
                         <div class="name">
                             <a href="">
-                                <h3 class="m-0 p-0"></h3>
+                                <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
                             </a>
                         </div>
 
@@ -58,10 +58,11 @@
                 <a href="?page={{ events.previous_page_number }}">previous</a>
                 {% endif %}
 
+               
 
                 {% if events.has_next %}
                 <a href="?page={{ events.next_page_number }}">next</a>
-                <a href="?page={{ events.paginator.num_pages }}">last &raquo;</a>
+                <a href="?page={{events.paginator.num_pages }}">last &raquo;</a>
                 {% endif %}
             </span>
         </div>

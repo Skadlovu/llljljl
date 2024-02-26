@@ -8,13 +8,13 @@ Tags
 
 {%block content%}
 
-<section></section>
 <section>
     <div class="container">
         <div class="section-header d-flex justify-content-between align-items-center mb-5">
             <h4> Tags</h4>
             <div>
-            <a href="/"> <i class="bi bi-houses-fill"></i></a>
+                <a href="{% url 'events:all_tags' %}"> <i class="bi bi-chevron-left"></i></a>
+                <a href="/"> <i class="bi bi-houses-fill"></i></a>
             </div>
         </div>
         <div class="row">

@@ -17,14 +17,16 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 </style>
-<section></section>
+
 <section class="single-post-content">
     <div class="container">
         <div class="section-header d-flex justify-content-between align-items-center mb-5">
-            <h1> Posted on {{event.upload_date}} <br> Views {{event.views}} <br>{{ event.likes.count }}
-            {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
-            {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"> </i>
-            {%endif%} <br> {%if event.attending.count == 1%} 1 person interested <i class="fa-sharp fa-solid fa-face-thinking"></i> {%else%} {{event.attending.count}} people interested{%endif%} </h1>
+            <p> <strong>Posted : {{event.upload_date}} <br> {{event.views}} {%if event.views.count == 1 %} View {%else%} Views {%endif%} <i style="color: rgb(185, 223, 162);" class="bi bi-eye-fill"></i> <br> {{event.likes.count}}
+            {% if event.likes.count == 1 %} Like <i style="fill:rgb(185, 223, 162);color:rgb(185, 223, 162);" class="bi bi-suit-heart-fill"></i>
+            {%else %} Likes <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-suit-heart-fill"> </i>
+            {%endif%} <br> {%if event.attending.count == 1%} 1 person <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i>  {%elif event.attending.count == 0%} {%else%} {{event.attending.count}} people  <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i> {%endif%} 
+        
+        </strong> </p>
             <div>
 
             </div>
@@ -33,17 +35,17 @@
             <div class="col-md-9 post-content" data-aos="fade-up">
 
                 <!-- ======= Single Post Content ======= -->
-                <div class="single-post">
+                <div class="single-post align-items-center">
                     <div class="post-meta">
                         <span class="date"><a href="{% url 'events:categorylist' event.category.slug %}"> {{event.category}}</a></span> 
                         <span class="mx-1">&bullet;</span>
-                        <span> <a href="{}"> {{event.event_date}}</a> </span>
+                        <span> <a href="{% url 'events:event_date_view' year=event.event_date.year month=event.event_date.month day=event.event_date.day %}"> {{event.event_date}}</a> </span>
                         <span class="mx-1">&bullet;</span>
                         <span> <a href="{% url 'events:user_events' event.uploaded_by.username %}  "> {{event.uploaded_by}} </a></span>
                         <span class="mx-1">&bullet;</span>
-                        <span> <a href="{% url 'events:citylist' event.city.slug %}"></a> {{event.city}} </span>
+                        <span> <a href="{% url 'events:citylist' event.city.slug %}"> {{event.city}}</a> </span>
                     </div>
-                    <h1 class="mb-5">{{event.title}}</h1>
+                    <h1 class="">{{event.title}}</h1>
                     <figure class="my-4">
                         <img src="{{event.landscape.url}}" alt="" class="img-fluid" height="1100px" width="900px" >
                     </figure>
@@ -52,26 +54,25 @@
                             {%if user.is_authenticated%}
                                 <p></p>
                             {%else%}
-                                <p> <strong> <a href="{% url 'login' %}"> Engage</a> </strong></p>
+                                <p> <strong> <a href="{% url 'login' %}?next={{ request.path }}"> Engage</a> </strong></p>
                             {%endif%}
                             {%if user.is_authenticated%}
-                            <form method="post" action="{% url 'events:like_event' event.id %}">
-                                <button id="attend-button" data-event-id="{{event.id}}" data-attending-count="{{event.attending.count}}">
+                            <form method="post" action="{% url 'events:toggle_attending' event.id %}">
+                                <button style="background-color: rgb(185, 223, 162);" id="attend-button" data-event-id="{{event.id}}" data-attending-count="{{event.attending.count}}">
                                     {%if user in event.attending.all %} Not interested! {% else%} intrested ? {%endif %}
                                 </button>
-                                            <p>
+                                            <a>
                                                 {{ event.attending.count }}
                                                 {% if event.attending.count == 0 %} interested
-                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgba(123, 255, 0, 0.294);color: red;"
+                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);"
                                                     class="bi bi-person-walking"></i>
-                                                {% elif event.attending.count == 2 %}interested <i style="fill: red;color: red;" class="bi bi-person-walking"></i> <i
-                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i>
-                                                {% elif event.attending.count == 3 %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i
-                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
+                                                {% elif event.attending.count == 2 %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i> <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i> 
+                                                {% elif event.attending.count == 3 %} interested<i style="fill:rgb(185, 223, 162);color: red;" class="bi bi-person-walking"></i><i
+                                                    style="fill:rgb(185, 223, 162);color: red;" class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: red;"
                                                     class="bi bi-person-walking"></i>
-                                                {%else %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
-                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i><i
-                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {%else %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);"
+                                                    class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: red;" class="bi bi-person-walking"></i><i
+                                                    style="fill: rgb(185, 223, 162);color: red;" class="bi bi-person-walking"></i>
                                                 {%endif%}
                                                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                                 <script>
@@ -100,18 +101,18 @@
                                                         });
                                                     });
                                                 </script>
-                                            </p>
+                                            </a>
                                             {%else%}
                                             <br>
-                                            <p>
+                                            <a>
                                                 {{event.attending.count}}
                                                 {% if event.attending.count == 0 %} interested
-                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgba(123, 255, 0, 0.294);color: red;" class="bi bi-person-walking"></i>
-                                                {% elif event.attending.count == 2 %}interested <i style="fill: red;color: red;" class="bi bi-person-walking"></i> <i style="fill: red;color: red;" class="bi bi-person-walking"></i>
-                                                {% elif event.attending.count == 3 %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
-                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i>
-                                                {%else %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
-                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 2 %}interested <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i> <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 3 %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);"
+                                                    class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i>
+                                                {%else %} interested<i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);"
+                                                    class="bi bi-person-walking"></i><i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-person-walking"></i>
                                                 {%endif%}
                                                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                                 <script>
@@ -140,7 +141,7 @@
                                                         });
                                                     });
                                                 </script>
-                                            </p>
+                                            </a>
                                             
                                             
                                             
@@ -148,13 +149,13 @@
                             </form>
                             {%if user.is_authenticated%}
                             <form method="post" action="{% url 'events:like_event' event.id %}" id="like-form" name="like-form">
-                                <button id="like-button" data-event-id="{{event.id}}" data-likes-count="{{event.like_count}}">
+                                <button style="background-color: rgb(185, 223, 162);" id="like-button" data-event-id="{{event.id}}" data-likes-count="{{event.like_count}}">
                                     {%if user in event.likes.all %}Unlike{% else%}Like{%endif%}
                                 </button>
-                                <p>
+                                <a>
                                     {{ event.likes.count }}
-                                    {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
-                                    {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"> </i>
+                                    {% if event.likes.count == 1 %} Like <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-suit-heart-fill"></i>
+                                    {%else %} Likes <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-suit-heart-fill"> </i>
                                     {%endif%}
                                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                     <script>
@@ -183,13 +184,13 @@
                                             });
                                         });
                                     </script>
-                                </p>
+                                </a>
                                 {%else%}
                                 <br>
-                                <p>
+                                <a>
                                     {{ event.likes.count }}
-                                    {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
-                                    {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
+                                    {% if event.likes.count == 1 %} Like <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-suit-heart-fill"></i>
+                                    {%else %} Likes <i style="fill: rgb(185, 223, 162);color: rgb(185, 223, 162);" class="bi bi-suit-heart-fill"></i>
                                     {%endif%}
                                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                     <script>
@@ -218,7 +219,7 @@
                                             });
                                         });
                                     </script>
-                                </p>
+                                </a>
                                 
                                 {%endif%}
 
@@ -258,28 +259,32 @@
                 </div><!-- End Single Post Content -->
 
                 <!-- ======= Comments ======= -->
+                {%if comments%}
                 <div class="comments">
                     <h5 class="comment-title py-4">Comments</h5>
+                    {%for item in comments%}
                     <div class="comment d-flex mb-4">
                         <div class="flex-shrink-0">
-                            {%for item in comments%}
                             <div class="avatar avatar-sm rounded-circle">
-                                <img class="avatar-img" src="{{item.uploaded_by.profile.image.url}}" alt="" class="img-fluid">
+                                <a href="{% url 'events:user_events' item.user.username%}"> <img class="avatar-img" src="{{item.user.profile.image.url}}" alt="" class="img-fluid"></a>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-2 ms-sm-3">
                             <div class="comment-meta d-flex align-items-baseline">
-                                <h6 class="me-2">{{item.uploaded_by}}</h6>
+                                <h6 class="me-2">{{item.user.username}}</h6>
                                 <span class="text-muted"> {{item.created_at}} </span>
                             </div>
                             <div class="comment-body">
                                 {{item.text}}
-                          
+                                
                             </div>
-                            {%endfor%}
                         </div>
                     </div>
+                    {%endfor%}
                 </div><!-- End Comments -->
+                {%else%}
+
+                {%endif%}
 
                 <!-- ======= Comments Form ======= -->
                 <div class="row justify-content-center mt-5">
@@ -289,16 +294,16 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 {%if user.is_authenticated %}
-                                <form action=" {% url 'events:event' event.id %}">
+                                <form method="POST" action=" {% url 'events:submit_comment' event.id %}">
                                     {%csrf_token%}
                                     {{form|crispy}}
                                     <br>
-                                    <button type="submit" class="btn btn-primary" value="Post comment" >
+                                    <button style="background-color: rgb(185, 223, 162);" type="submit" class="btn btn-primary" value="Post comment" >
                                         Post Comment
                                     </button>
                                 </form>
                                 {%else%}
-                                <p><strong><a href="{% url 'login' %}?next={{request.path}}"> Post Comment</a></strong></p>
+                                <p style="color: rgb(185, 223, 162);"><strong><a href="{% url 'login' %}?next={{request.path}}"> Post Comment</a></strong></p>
                                 {%endif%}
 
                             </div>
@@ -350,7 +355,7 @@
                     <h3 class="aside-title">Catogories</h3>
                     <ul class="aside-links list-unstyled">
                         {%for category in categories%}
-                        <li><a  href="{% url 'events:categorylist' category.slug %}">{{category.name}} {{category.events_count}} <i class="bi bi-chevron-right"></i></a></li>
+                        <li><a  href="{% url 'events:categorylist' category.slug %}">{{category.name}} {{category.event_count}} <i class="bi bi-chevron-right"></i></a></li>
                         {%endfor%}
                     </ul>
                 </div><!-- End Categories -->

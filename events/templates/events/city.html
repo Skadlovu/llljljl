@@ -6,9 +6,7 @@ Event Cities
 
 
 {%block content%}
-<section>
 
-</section>
     <section>
         <div class="container">
             <div class="section-header d-flex justify-content-between align-items-center mb-5">
@@ -24,7 +22,7 @@ Event Cities
                     <div class="post-entry-1 lg">
                         <div class="post-meta">
                             <span class="aside-links list-unstyled"> <a href="{% url 'events:citylist' item.slug %}">
-                                    {{item.name}}</a></span>
+                                    {{item.name}} {{item.event_count}}</a></span>
                         </div>
                     </div>
                 </div>

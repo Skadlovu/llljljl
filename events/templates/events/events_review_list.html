@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+{%load static%}
+{% block title %}
+Event Review List
+{% endblock %}
+
+
+{%block content%}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+            <h1>Event Review List</h1>
+            <ul>
+                {% for review in reviews %}
+                <li>
+                    <a href="{% url 'events:event_review' review.id}"><strong>Event: {{ review.event.title }} Event date: {{review.event.date}}</strong><br>
+                        <strong> </strong>
+                    
+                    </a>
+                </li>
+                {% empty %}
+                <li>No event reviews available.</li>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
