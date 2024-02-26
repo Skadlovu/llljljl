@@ -6,6 +6,12 @@ from PIL import Image
 class Profile(models.Model):
 	user=models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 	image=models.ImageField(default='mountain.jpeg', upload_to='profile-pics', blank=True, null=True, verbose_name='Profile picture')
+	user_bio-models.TextField(max_length=300)
+	venue_1=models.ImageField(default='', upload_to='venue-pics', blank=True, null=True, verbose_name='Pictures of venue')
+	venue_2=models.ImageField(default='', upload_to='venue-pics', blank=True, null=True, verbose_name='Pictures of venue')
+	venue_3=models.ImageField(default='', upload_to='venue-pics', blank=True, null=True, verbose_name='Pictures of venue')
+	venue_4=models.ImageField(default='', upload_to='venue-pics', blank=True, null=True, verbose_name='Pictures of venue')
+	
 
 
 	def __str__(self):
