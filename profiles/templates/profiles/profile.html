@@ -1,0 +1,83 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+User Profile
+{% endblock %}
+{%block content%}
+<section id="about" class="about">
+    <div class="container" data-aos="">
+        <div class="section-header">
+            <h2>User Information</h2>
+        </div>
+        <div class="row g-4 g-lg-5" data-aos="" data-aos-delay="">
+            <div class="col-lg-5">
+                <div class="about-img">
+                    <img src="{% static '/img/poster.png' %}" class="img-fluid" alt="">
+                </div>
+            </div>
+            <div class="col-lg-10" style="color: grey;">
+                <h3 class="pt-0 pt-lg-5" style="color: grey;"> Joined on: <br>{{ user.date_joined|date:"F j, Y H:i" }}</h3>
+
+                <!-- Tabs -->
+                <ul class="nav nav-pills mb-3">
+                    <li><a class="nav-link active" data-bs-toggle="pill" href="#tab1">User</a></li>
+                </ul><!-- End Tabs -->
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="tab1">
+                        <div class="d-flex mt-4">
+                            <div>
+                                <img src="{{ user.profile.image.url }}">
+                                <h3>{{ user.username }}</h3>
+                                <p>{{ username.email }}</p>
+                              
+                            </div>
+                            <div class=" form">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <legend>Manage profile </legend>
+                                    {{ userform |crispy}}
+                                    {{ profileform |crispy }}
+                                    <br>
+                                    <button class="btn btn-outline-info" style="background-color: grey;color:black;outline:none;" type="submit">Update</button>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-info" style="background-color: grey;color:black;outline:none;" type="submit"> <a href="{% url 'password_reset' %}">Reset
+                                            Password</a></button>
+                                </form>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                    <h4> Your events</h4>
+                </div>
+                <div class="row">
+                    {%if user_events%}
+                    {%for event in user_events%}
+                    <div class="col-lg-4">
+                        <div class="post-entry-1 lg">
+                            <a href="{% url 'events:event' event.id %}"><img src="{{event.thumb.url}}" alt="" height="250px" width="250px"></a>
+                            <div>
+                                <a href="{% url 'events:event' event.id %}"> <strong> {{event.title}} <br> {{event.category}} <br> {{event.city}}
+                                <br>{{event.event_date}} <br> Posted on: {{event.upload_date}} </strong></a>
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+                    {%else%}
+                    <div>
+                        <p> You have not posted an event  <strong> <a href="{% url 'events:create_event' %}"> Post event?</a></strong></p>
+                    </div>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>                   
+{% endblock content %}

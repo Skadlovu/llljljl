@@ -1,0 +1,45 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+Login
+{% endblock %}
+{% block content%}
+<section id="about" class="about">
+    <div class="row g-4 g-lg-5" data-aos="" data-aos-delay="">
+        <div class="col-lg-5">
+            <div class="about-img">
+                <img src="{% static '/img/poster.png' %}" class="img-fluid" alt="" height="500px" width="300">
+            </div>
+        </div>
+        <div class="col-lg-7" style="color: blue;">
+            <h3 class="pt-0 pt-lg-5" style="color: grey;"> LOGIN</h3>
+
+            <!-- Tabs -->
+            <ul class="nav nav-pills mb-3">
+                <li><a></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane show active" id="tab1">
+                    <div class="d-flex align-items-center mt-4">
+                        <form method="POST" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <h1>Log in</h1>
+                            {{ form|crispy }}
+                            <button class="btn btn-outline-info" style="background-color: grey;color:black;outline:none;" type="submit">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div>
+                Need an account? <a style="color: grey;" href="{% url 'register'%}"><strong> Register</strong></a>
+            </div>
+            <div>
+                Want to reset password? <a style="color: grey;" href="{% url 'password_reset' %}">
+                    <strong>Reset</strong></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
