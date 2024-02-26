@@ -1,19 +1,48 @@
 from django import forms
-from.models import Event,EventReview,Comment
-from bootstrap_datepicker_plus.widgets import DatePickerInput,TimePickerInput
+from.models import Event,Comment,ReviewRating,ReviewComment
+from bootstrap_datepicker_plus.widgets import DatePickerInput,TimePickerInput,DateTimePickerInput
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 from django.utils import timezone
+
+
+class ReviewRatingForm(forms.ModelForm):
+    class Meta:
+        model = ReviewRating
+        fields = ['rating']
+        RATING_CHOICES = [
+        (1, '1 - Poor'),
+        (2, '2 - Fair'),
+        (3, '3 - Average'),
+        (4, '4 - Good'),
+        (5, '5 - Excellent'),
+    ]
+        widgets={
+            'rating':forms.ChoiceField(choices=RATING_CHOICES)
+        }
+
+
+
+class ReviewCommentForm(forms.ModelForm):
+    class Meta:
+        model = ReviewComment
+        fields = ['text'] 
+        widgets = {
+            'text': forms.Textarea(attrs={'placeholder': 'Add a comment...'}),
+        }
+
 
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']  # Assuming your Comment model has a 'text' field for the actual comment text
+        fields = ['text'] 
         widgets = {
             'text': forms.Textarea(attrs={'placeholder': 'Add a comment...'}),
         }
+
+
 
 class LikeForm(forms.Form):
     event_id = forms.IntegerField(widget=forms.HiddenInput())
@@ -21,20 +50,14 @@ class LikeForm(forms.Form):
 
 
 
-class EventReviewForm(forms.ModelForm):
-    class Meta:
-        model=EventReview
-        fields=['ratings', 'comment']
-       
-
-
 
 class EVentUploadForm(forms.ModelForm):
     class Meta:
         model=Event
-        fields=['title', 'category','city','description','event_venue','entry_fee', 'event_date', 'event_time', 'thumb','tags' ]
+        fields=['title', 'category','city','description','event_venue','entry_fee', 'event_date', 'event_time', 'thumb','tags','end_time' ]
         widgets={'event_date': DatePickerInput(),
                  'event_time':TimePickerInput(),
+                 'end_time':DateTimePickerInput(),
                  'description': forms.Textarea(attrs={'rows': 5, 'cols': 40}),}
 
 
@@ -59,6 +82,7 @@ class EventSearchForm(forms.Form):
 
 class CitySearchForm(forms.Form):
     city=forms.CharField(max_length=100, required=False, label='Search for the city')
+
 
 
 
