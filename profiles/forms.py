@@ -21,7 +21,7 @@ class UserProfileUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model= Profile
-		fields=['image']
+		fields=['image','venue_address','venue_1','venue_2','venue_3','venue_4']
 
 class ChangePasswordForm(forms.ModelForm):
 	
