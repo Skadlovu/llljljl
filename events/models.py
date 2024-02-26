@@ -1,18 +1,22 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.urls import reverse
 from profiles.models import Profile
 from PIL import Image
-from django.utils.text import slugify
-import os
 from.create_landscape import create_landscape
 from.create_portrait import create_portrait
 from taggit.managers import TaggableManager
 from schedule.models import Event as SchedulerEvent
+from django.utils import timezone
+from django.contrib.auth.models import User
+from datetime import datetime
+import datetime as time
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
 
 
 
 class Comment(models.Model):
+    event=models.ForeignKey('Event',on_delete=models.CASCADE,null=True,blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,6 +26,9 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+
 
 
 class Category(models.Model):
@@ -49,6 +56,8 @@ class Category(models.Model):
 
         # Return the updated number of events
         return events_count
+    
+
 
 class City(models.Model):
     name=models.CharField( max_length=100, unique=True)
@@ -97,15 +106,20 @@ class Event(models.Model):
     id=models.AutoField(primary_key=True)
     tags=TaggableManager()
     attending = models.ManyToManyField(User, related_name='events_attending', blank=True)
-    comments = models.ManyToManyField(Comment, related_name='event_comments', blank=True)
+    comments = models.OneToOneField(Comment, on_delete=models.CASCADE, related_name='event_comments', blank=True, null=True)
     end_time = models.DateTimeField(null=True,blank=True)
+
 
     def create_scheduler_event(self):
         # Create a corresponding SchedulerEvent
+        event_datetime = datetime.combine(self.event_date, self.event_time)
+        # Make the datetime object timezone aware
+        event_datetime_aware = timezone.make_aware(event_datetime)
+
         scheduler_event = SchedulerEvent(
             title=self.title,
             description=self.description,
-            start=self.event_date,
+            start=event_datetime_aware,
             end=self.end_time,
             # Add other fields as needed
         )
@@ -123,8 +137,10 @@ class Event(models.Model):
             create_landscape(self)
 
         
+
     def number_of_likes(self):
         return self.likes.count
+
 
     def get_related_events(self):
         related_by_category=Event.objects.filter(category=self.category).exclude(id=self.id)
@@ -136,6 +152,7 @@ class Event(models.Model):
 
         return related_events
     
+
     def __str__(self):
         return self.title
     
@@ -143,27 +160,48 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse ('event',kwargs={'slug':self.slug})
     
+
+    
     class Meta:
         ordering=['upload_date']
 
 
 
-
-
-class EventReview(models.Model):
-    event=models.ForeignKey(Event,on_delete=models.CASCADE, verbose_name='Event', null=True )
-    user=models.ForeignKey(User,on_delete=models.CASCADE, verbose_name='User', null=True)
-    ratings=models.IntegerField(default=0, help_text='Enter a rating between 1 and 5. Five being the best and 0 being the worse')
-    comment=models.TextField(blank=True, null=True)
-    created_at=models.DateTimeField(auto_now_add=True)
-    slug=models.SlugField(default='', null=False, blank=True)
+class ReviewComment(models.Model):
+    event_review=models.ForeignKey('Review',on_delete=models.CASCADE,null=True,blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user.username}\'s review for {self.event.title}'
-    
-    def get_absolute_url(self):
-        return reverse ('event_review',kwargs={'slug':self.slug})
+        return f'{self.user.username} - {self.event_review}'
 
     class Meta:
-        ordering = ['event__event_date']
+        ordering = ['-created_at']
 
+class ReviewRating(models.Model):
+      event_review=models.ForeignKey('Review',on_delete=models.CASCADE,null=True,blank=True )
+      user = models.ForeignKey(User, on_delete=models.CASCADE)
+      rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+
+
+
+
+class Review(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name='Event')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='User')
+    user_comments = models.OneToOneField(ReviewComment,blank=True, null=True ,on_delete=models.CASCADE)
+    user_ratings=models.OneToOneField(ReviewRating,on_delete=models.CASCADE, blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(default='',unique=True, null=False, blank=True)
+    id=models.AutoField(primary_key=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.event.title}'
+    
+    def get_absolute_url(self):
+        return reverse ('review',kwargs={'slug':self.slug})
+    
+    class Meta:
+        ordering=['created_at']
