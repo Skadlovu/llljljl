@@ -1,0 +1,368 @@
+{% extends 'base.html'%}
+{%load static%}
+{% block title %}
+Home
+{% endblock %}
+
+
+{%block content%}
+<section>
+
+</section>
+<section>
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-5">
+            <h4> Categories</h4>
+            <div>
+                <a class="more" href="{% url 'events:category' %}"> See all categories</a>
+            </div>
+        </div>
+        <div class="row">
+            {%if categories %}
+            {%for item in categories%}
+            <div class="col-lg-2">
+                <div class="post-entry-1 lg">
+                    <div class="post-meta">
+                        <span class="aside-links list-unstyled"> <a href="{% url 'events:categorylist' item.slug %}"> {{item.name}}</a></span>
+                    </div>
+                </div>
+            </div>
+            {%endfor%}
+            {%else%}
+            <p> No categories available</p>
+            {%endif%}
+        </div>
+    </div>
+    <div class="text-start py-4">
+        <div class="custom-pagination">
+                    {% if categories.has_previous %}
+                    <a class="first" href="?page=1">first</a>
+                    <a class='prev' href="?page={{ categories.previous_page_number }}">previous</a>
+                    {% endif %}
+                    {% if categories.has_next %}
+                    <a class="next" href="?page={{ categories.next_page_number }}">next</a>
+                    <a class="last" href="?page={{categories.paginator.num_pages }}">last</a>
+                    {% endif %}
+            </div>
+    </div>
+</section>
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4>Recently Uploaded Events</h4>
+                <div> <a class="more" href="{% url 'events:recently_posted' %}"> See all recently posted events</a></a></div>
+            </div>
+            <div class="row">
+                {%if recently_posted_events%}
+                {% for item in recently_posted_events %}
+                <div class="col-lg-3">
+                    <div class="post-entry-1 lg">
+                        <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                                class="img-fluid"></a>
+                        <div class="post-meta"><span class="date"> <a
+                                    href="{% url 'events:categorylist' item.category.slug %}">
+                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
+                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
+                                <br>{{item.event_date}} </span>
+                        </div>
+                        <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                        <div class="d-flex align-items-center author">
+                            <div class="photo">
+                                <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt=""
+                                        class="img-fluid"></a>
+                            </div>
+                            <div class="name">
+                                <a href="">
+                                    <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
+                                </a>
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No events available</p>
+                {%endif%}
+            </div>
+            <div class="text-start py-4">
+                <div class="custom-pagination">
+                    {% if recently_posted_events.has_previous %}
+                    <a class="first" href="?page=1">first</a>
+                    <a class="prev" href="?page={{ recently_posted_events.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    {% if recently_posted_events.has_next %}
+                    <a class="next" href="?page={{ recently_posted_events.next_page_number }}">next</a>
+                    <a class="last" href="?page={{recently_posted_events.paginator.num_pages }}">last </a>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="justify-content-between ">
+                <p> </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4><a class="" href="{% url 'events:most_viewed' %}">Most Viewed Events</a></h4>
+                <div><a class="more" href="{% url 'events:most_viewed' %}"> See all most viewed events</a> </div>
+            </div>
+            <div class="row">
+                {%if most_viewed%}
+                {% for item in most_viewed %}
+                <div class="col-lg-3">
+                    <div class="post-entry-1 lg">
+                        <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                                class="img-fluid"></a>
+                        <div class="post-meta"><span class="date"> <a
+                                    href="{% url 'events:categorylist' item.category.slug %}">
+                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
+                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
+                                <br>{{item.event_date}} </span>
+                        </div>
+                        <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                        <div class="d-flex align-items-center author">
+                            <div class="photo">
+                                <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt=""
+                                        class="img-fluid"></a>
+                            </div>
+                            <div class="name">
+                                <a href="">
+                                    <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
+                                </a>
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No events available</p>
+                {%endif%}
+            </div>
+                <div >
+                    <div class="text-start py-4">
+                        <div class="custom-pagination">
+                            {% if most_viewed.has_previous %}            
+                            <a class="first" href="?page=1"> first</a>
+                            <a class="prev" lhref="?page={{ most_viewed.previous_page_number }}">previous</a>
+                            {% endif %}
+                        {% if most_viewed.has_next %}
+                        <a class="next" href="?page={{ most_viewed.next_page_number }}">next</a>
+                        <a class="last" href="?page={{ most_viewed.paginator.num_pages }}">last </a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div  class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <p> </p>
+                </div>
+            </div>
+        </div>              
+    </section>
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4> Tags</h4>
+                <div>
+                    <a class="more" href="{ url 'event:tags' %}"> See all tags</a>
+                </div>
+            </div>
+            <div class="row">
+                {%if tags %}
+                {%for item in tags%}
+                <div class="col-lg-2">
+                    <div class="post-entry-1 lg">
+                        <div class="post-meta">
+                            <span class="aside-links list-unstyled"> <a href="{% url 'events:tagged_events' item.slug %}">
+                                    {{item.name}}</a></span>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No tags available</p>
+                {%endif%}
+            </div>
+        </div>
+        <div class="text-start py-4">
+            <div class="custom-pagination">
+                {% if tags.has_previous %}
+                <a class="first" href="?page=1">first</a>
+                <a class='prev' href="?page={{ tags.previous_page_number }}">previous</a>
+                {% endif %}
+                {% if tags.has_next %}
+                <a class="next" href="?page={{ tags.next_page_number }}">next</a>
+                <a class="last" href="?page={{tags.paginator.num_pages }}">last</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+   
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4> <a class="" href="{% url 'events:trending_events' %}">Trending Events</a></h4>
+                <div><a class="more" href="{% url 'events:trending_events' %}"> See all trending events</a></div>
+            </div>
+            <div class="row">
+                {%if trending_events%}
+                {% for item in trending_events %}
+                <div class="col-lg-3">
+                    <div class="post-entry-1 lg">
+                        <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                                class="img-fluid"></a>
+                        <div class="post-meta"><span class="date"> <a
+                                    href="{% url 'events:categorylist' item.category.slug %}">
+                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
+                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
+                                <br>{{item.event_date}} </span>
+                        </div>
+                        <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                        <div class="d-flex align-items-center author">
+                            <div class="photo">
+                                <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt=""
+                                        class="img-fluid"></a>
+                            </div>
+                            <div class="name">
+                                <a href="">
+                                    <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
+                                </a>
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No events available</p>
+                {%endif%}
+            </div>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if trending_events.has_previous %}
+                    <a class="first" href="?page=1">&laquo; first</a>
+                    <a class="prev" href="?page={{ trending_events.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    {% if trending_events.has_next %}
+                    <a class="next" href="?page={{ trending_events.next_page_number }}">next</a>
+                    <a class="last" href="?page={{ trending_events.paginator.num_pages }}">last</a>
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                <p> </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4>Upcoming Events</h4>
+                <div>
+                    <a class="more" href="{% url 'events:upcoming_events' %}"> See all upcoming events</a>
+                </div>
+            </div>
+            <div class="row">
+                {%if upcoming_events%}
+                {% for item in upcoming_events %}
+                <div class="col-lg-3">
+                    <div class="post-entry-1 lg">
+                        <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                                class="img-fluid"></a>
+                        <div class="post-meta"><span class="date"> <a
+                                    href="{% url 'events:categorylist' item.category.slug %}">
+                                    {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a
+                                    href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span>
+                                <br>{{item.event_date}} </span>
+                        </div>
+                        <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                        <div class="d-flex align-items-center author">
+                            <div class="photo">
+                                <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt=""
+                                        class="img-fluid"></a>
+                            </div>
+                            <div class="name">
+                                <a href="">
+                                    <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
+                                </a>
+                            </div>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No events available</p>
+                {%endif%}
+            </div>
+            <div class="text-start py-4">
+                <div class="custom-pagination">
+                    {% if upcoming_events.has_previous %}
+                    <a class="first" href="?page=1">first</a>
+                    <a class="prev" href="?page={{ upcoming_events.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    {% if upcoming_events.has_next %}
+                    <a class="next" href="?page={{ upcoming_events.next_page_number }}">next</a>
+                    <a class="last" href="?page={{ upcoming_events.paginator.num_pages }}">last</a>
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                <p> </p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                <h4> Cities</h4>
+                <div>
+                    <a class="more" href="{% url 'events:city' %}"> See all cties</a>
+                </div>
+            </div>
+            <div class="row">
+                {%if city %}
+                {%for item in city%}
+                <div class="col-lg-2">
+                    <div class="post-entry-1 lg">
+                        <div class="post-meta">
+                            <span class="aside-links list-unstyled"> <a href="{% url 'events:citylist' item.slug %}">
+                                    {{item.name}}</a></span>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+                {%else%}
+                <p> No cities available</p>
+                {%endif%}
+            </div>
+        </div>
+        <div class="text-start py-4">
+            <div class="custom-pagination">
+                {% if city.has_previous %}
+                <a class="first" href="?page=1">first</a>
+                <a class='prev' href="?page={{ city.previous_page_number }}">previous</a>
+                {% endif %}
+                {% if city.has_next %}
+                <a class="next" href="?page={{ city.next_page_number }}">next</a>
+                <a class="last" href="?page={{city.paginator.num_pages }}">last</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

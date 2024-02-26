@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+{%load static%}
+{% block title %}
+Event Review Details
+{% endblock %}
+
+
+{%block content%}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <h1>Event Reviews for {{ event.title }}</h1>
+                <ul>
+                    {% for review in reviews %}
+                    <li><a href="{% url 'events:event_review_detail' event_id=event.id review_id=review.id %}">{{ review.user.username
+                            }}'s
+                            Review</a></li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

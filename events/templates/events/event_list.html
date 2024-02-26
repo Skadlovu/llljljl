@@ -1,0 +1,43 @@
+{% extends 'base.html'%}
+{%load static%}
+{% block title %}
+Latest Events
+{% endblock %}
+
+
+{%block content%}
+<section>
+    <div class="container">
+        <div class="section-header">
+            <h1> Upcoming Events</h1>
+        </div>
+        <div class="row">
+            {%if events%}
+            {% for item in events %}
+            <div class="col-lg-4">
+                <div class="post-entry-1 lg">
+                    <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt="" class="img-fluid"></a>
+                    <div class="post-meta"><span class="date"> <a href="{% url 'events:categorylist' item.category.slug %}"> {{item.category}}</a></span><span class="mx-1"> &bullet;</span><span><a href="{% url 'events:citylist' item.city.slug%}">{{item.city}}</a></span><span> <br>{{item.event_date}} </span>
+                    </div>
+                    <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                    <div class="d-flex align-items-center author">
+                        <div class="photo">
+                            <a href=""> <img src="{{ item.uploaded_by.profile.image.url }}" alt="" class="img-fluid"></a>
+                        </div>
+                        <div class="name">
+                            <a href=""> <h3 class="m-0 p-0">{{item.uploaded_by}}</h3></a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            {%endfor%}
+            {%else%}
+            <p> No events available</p>
+            {%endif%}
+        </div>
+    </div>
+</section>
+{%endblock%}

@@ -1,0 +1,27 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{%load static%}
+{% block title %}
+Event Review Details
+{% endblock %}
+
+
+{%block content%}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <h1>Create Event Review for {{ event.title }}</h1>
+                
+                <form method="post" action="{% url 'events:create_event_review' event_id=event.id %}">
+                    {% csrf_token %}
+                    {{ form|crispy}}
+                    <button type="submit">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

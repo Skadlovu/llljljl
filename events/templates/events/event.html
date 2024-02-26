@@ -1,0 +1,443 @@
+{% extends 'base.html'%}
+{%load static%}
+{% load crispy_forms_tags %}
+{% block title %}
+{{event.title}}
+{% endblock %}
+
+
+{%block content%}
+<style>
+    section {
+        max-width: 90%;
+        margin: 20px auto;
+        background-color: #fff;            
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+</style>
+<section></section>
+<section class="single-post-content">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-5">
+            <h1> Posted on {{event.upload_date}} <br> Views {{event.views}} <br>{{ event.likes.count }}
+            {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
+            {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"> </i>
+            {%endif%} <br> {%if event.attending.count == 1%} 1 person interested <i class="fa-sharp fa-solid fa-face-thinking"></i> {%else%} {{event.attending.count}} people interested{%endif%} </h1>
+            <div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 post-content" data-aos="fade-up">
+
+                <!-- ======= Single Post Content ======= -->
+                <div class="single-post">
+                    <div class="post-meta">
+                        <span class="date"><a href="{% url 'events:categorylist' event.category.slug %}"> {{event.category}}</a></span> 
+                        <span class="mx-1">&bullet;</span>
+                        <span> <a href="{}"> {{event.event_date}}</a> </span>
+                        <span class="mx-1">&bullet;</span>
+                        <span> <a href="{% url 'events:user_events' event.uploaded_by.username %}  "> {{event.uploaded_by}} </a></span>
+                        <span class="mx-1">&bullet;</span>
+                        <span> <a href="{% url 'events:citylist' event.city.slug %}"></a> {{event.city}} </span>
+                    </div>
+                    <h1 class="mb-5">{{event.title}}</h1>
+                    <figure class="my-4">
+                        <img src="{{event.landscape.url}}" alt="" class="img-fluid" height="1100px" width="900px" >
+                    </figure>
+                    <div class="container">
+                        <div class="section-header d-flex justify-content-between align-items-center">
+                            {%if user.is_authenticated%}
+                                <p></p>
+                            {%else%}
+                                <p> <strong> <a href="{% url 'login' %}"> Engage</a> </strong></p>
+                            {%endif%}
+                            {%if user.is_authenticated%}
+                            <form method="post" action="{% url 'events:like_event' event.id %}">
+                                <button id="attend-button" data-event-id="{{event.id}}" data-attending-count="{{event.attending.count}}">
+                                    {%if user in event.attending.all %} Not interested! {% else%} intrested ? {%endif %}
+                                </button>
+                                            <p>
+                                                {{ event.attending.count }}
+                                                {% if event.attending.count == 0 %} interested
+                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgba(123, 255, 0, 0.294);color: red;"
+                                                    class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 2 %}interested <i style="fill: red;color: red;" class="bi bi-person-walking"></i> <i
+                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 3 %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i
+                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
+                                                    class="bi bi-person-walking"></i>
+                                                {%else %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
+                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i><i
+                                                    style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {%endif%}
+                                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $('#attend-button').click(function () {
+                                                            var event_id = $(this).data('event-id');
+                                                            var attending_count = $(this).data('attending-count');
+
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: '/events/toggle_attending/' + event_id + '/',
+                                                                data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                                                                dataType: 'json',
+                                                                success: function (response) {
+                                                                    if (response.attending) {
+                                                                        $('#attend-button').text('Not Attending');
+                                                                    } else {
+                                                                        $('#attend-button').text('Attending');
+                                                                    }
+                                                                    $('#attending-count').text(response.attending_count);
+                                                                },
+                                                                error: function (error) {
+                                                                    console.log('Error:', error);
+                                                                }
+                                                            });
+                                                        });
+                                                    });
+                                                </script>
+                                            </p>
+                                            {%else%}
+                                            <br>
+                                            <p>
+                                                {{event.attending.count}}
+                                                {% if event.attending.count == 0 %} interested
+                                                {% elif event.attending.count == 1 %} interested<i style="fill: rgba(123, 255, 0, 0.294);color: red;" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 2 %}interested <i style="fill: red;color: red;" class="bi bi-person-walking"></i> <i style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {% elif event.attending.count == 3 %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
+                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {%else %} interested<i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i><i style="fill: red;color: red;"
+                                                    class="bi bi-person-walking"></i><i style="fill: red;color: red;" class="bi bi-person-walking"></i>
+                                                {%endif%}
+                                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        $('#attend-button').click(function () {
+                                                            var event_id = $(this).data('event-id');
+                                                            var attending_count = $(this).data('attending-count');
+
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: '/events/toggle_attending/' + event_id + '/',
+                                                                data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                                                                dataType: 'json',
+                                                                success: function (response) {
+                                                                    if (response.attending) {
+                                                                        $('#attend-button').text('Not Attending');
+                                                                    } else {
+                                                                        $('#attend-button').text('Attending');
+                                                                    }
+                                                                    $('#attending-count').text(response.attending_count);
+                                                                },
+                                                                error: function (error) {
+                                                                    console.log('Error:', error);
+                                                                }
+                                                            });
+                                                        });
+                                                    });
+                                                </script>
+                                            </p>
+                                            
+                                            
+                                            
+                                            {%endif%}
+                            </form>
+                            {%if user.is_authenticated%}
+                            <form method="post" action="{% url 'events:like_event' event.id %}" id="like-form" name="like-form">
+                                <button id="like-button" data-event-id="{{event.id}}" data-likes-count="{{event.like_count}}">
+                                    {%if user in event.likes.all %}Unlike{% else%}Like{%endif%}
+                                </button>
+                                <p>
+                                    {{ event.likes.count }}
+                                    {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
+                                    {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"> </i>
+                                    {%endif%}
+                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                    <script>
+                                        $(document).ready(function () {
+                                            $('#like-button').click(function () {
+                                                var event_id = $(this).data('event-id');
+                                                var likes_count = $(this).data('likes-count');
+
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '/events/event/' + event_id + '/',
+                                                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                                                    dataType: 'json',
+                                                    success: function (response) {
+                                                        if (response.liked) {
+                                                            $('#like-button').html('Unlike');
+                                                        } else {
+                                                            $('#like-button').html('Like');
+                                                        }
+                                                        $('#like-count').text(response.like_count);
+                                                    },
+                                                    error: function (error) {
+                                                        console.log('Error:', error);
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+                                </p>
+                                {%else%}
+                                <br>
+                                <p>
+                                    {{ event.likes.count }}
+                                    {% if event.likes.count == 1 %} Like <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
+                                    {%else %} Likes <i style="fill: red;color: red;" class="bi bi-suit-heart-fill"></i>
+                                    {%endif%}
+                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                    <script>
+                                        $(document).ready(function () {
+                                            $('#like-button').click(function () {
+                                                var event_id = $(this).data('event-id');
+                                                var likes_count = $(this).data('likes-count');
+
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: '/events/event/' + event_id + '/',
+                                                    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                                                    dataType: 'json',
+                                                    success: function (response) {
+                                                        if (response.liked) {
+                                                            $('#like-button').html('Unlike');
+                                                        } else {
+                                                            $('#like-button').html('Like');
+                                                        }
+                                                        $('#like-count').text(response.like_count);
+                                                    },
+                                                    error: function (error) {
+                                                        console.log('Error:', error);
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+                                </p>
+                                
+                                {%endif%}
+
+                            </form>
+                            
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <p><strong>Description:<br></strong> {{event.description}}</p>
+                            <p><strong>Event venue:</strong><br>
+                                {{event.event_venue}}</p>
+                            <p><strong>Event details<br>
+                                </strong> {{event.event_date}} <span class="mx-1">&bullet;</span>
+                                <span>{{event.event_time}}</span> <span class="mx-1">&bullet;</span>
+                                <span id="countdown" data-days="{{ timer.days }}" data-hours="{{ timer.hours }}" data-minutes="{{ timer.minutes }}"
+                                    data-seconds="{{ timer.seconds }}">
+                                    <strong> Time left: {{ timer.days }} days, {{ timer.hours }} hours, {{ timer.minutes }} minutes, {{ timer.seconds }} seconds</strong></span>
+                            </p>
+                            <p><strong>Entry fee:</strong><br>
+                                {% if event.entry_fee == 0 %}
+                                FREE [NO COVER CHARGE ]
+                                {%else%}
+                                R {{event.entry_fee}}</p>
+                                {%endif%}
+
+                            <br>
+                        </div>
+
+                    </div>
+                    <div>
+                        <div>
+
+                        </div>
+                    </div>
+                  
+                </div><!-- End Single Post Content -->
+
+                <!-- ======= Comments ======= -->
+                <div class="comments">
+                    <h5 class="comment-title py-4">Comments</h5>
+                    <div class="comment d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            {%for item in comments%}
+                            <div class="avatar avatar-sm rounded-circle">
+                                <img class="avatar-img" src="{{item.uploaded_by.profile.image.url}}" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-2 ms-sm-3">
+                            <div class="comment-meta d-flex align-items-baseline">
+                                <h6 class="me-2">{{item.uploaded_by}}</h6>
+                                <span class="text-muted"> {{item.created_at}} </span>
+                            </div>
+                            <div class="comment-body">
+                                {{item.text}}
+                          
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div><!-- End Comments -->
+
+                <!-- ======= Comments Form ======= -->
+                <div class="row justify-content-center mt-5">
+
+                    <div class="col-lg-12">
+                        <h5 class="comment-title"></h5>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                {%if user.is_authenticated %}
+                                <form action=" {% url 'events:event' event.id %}">
+                                    {%csrf_token%}
+                                    {{form|crispy}}
+                                    <br>
+                                    <button type="submit" class="btn btn-primary" value="Post comment" >
+                                        Post Comment
+                                    </button>
+                                </form>
+                                {%else%}
+                                <p><strong><a href="{% url 'login' %}?next={{request.path}}"> Post Comment</a></strong></p>
+                                {%endif%}
+
+                            </div>
+                           
+                            <div class="col-12">
+    
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Comments Form -->
+
+            </div>
+            <div class="col-md-3">
+                <!-- ======= Sidebar ======= -->
+                <div class="aside-block">
+
+                    <ul class="nav nav-pills custom-tab-nav mb-4" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-popular-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-popular" type="button" role="tab" aria-controls="pills-popular"
+                                aria-selected="true">Related Events</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        {%for event in related_events%}
+                        <!-- Popular -->
+                        <div class="tab-pane fade show active" id="pills-popular" role="tabpanel"
+                            aria-labelledby="pills-popular-tab">
+                            <div class="post-entry-1 border-bottom">
+
+                                <div class="post-meta">
+                                    <span class="date">{{event.category}}</span> 
+                                    <span class="mx-1">&bullet;</span> 
+                                    <span>{{event.event_date}}</span>
+                                </div>
+                                <div>
+                                    <a href="{% url 'events:event' event.id %}"><img src="{{event.thumb.url}}" alt="event" height="100px" width="100px" class="flex-shrink-0">
+                                </div>
+                                <h2 class="mb-2"><a href="#"> {{event.title}}</a></h2>
+                                <span class="author mb-3 d-block">{{event.uploaded_by}}</span>
+                            </div>
+                        </div> <!-- End Popular -->
+                        {%endfor%}
+                    </div>
+                </div>
+
+                <div class="aside-block">
+                    <h3 class="aside-title">Catogories</h3>
+                    <ul class="aside-links list-unstyled">
+                        {%for category in categories%}
+                        <li><a  href="{% url 'events:categorylist' category.slug %}">{{category.name}} {{category.events_count}} <i class="bi bi-chevron-right"></i></a></li>
+                        {%endfor%}
+                    </ul>
+                </div><!-- End Categories -->
+
+                <div class="aside-block">
+                    <h3 class="aside-title">Cities</h3>
+                    <ul class="aside-links list-unstyled">
+                        {%for city in cities%}
+                        <li><a href="{% url 'events:citylist' city.slug %}"> {{city.name}}<i class="bi bi-chevron-right"></i></a></li>
+                        {%endfor%}
+                    </ul>
+                </div><!-- End Categories -->
+
+                <div class="aside-block">
+                    <h3 class="aside-title">Tags</h3>
+                    <ul class="aside-tags list-unstyled">
+                        {%for tag in event.tags.all %}
+                        <li><a href=" {% url 'events:tagged_events' tag.slug %}">{{tag.name}} <i class="bi bi-hash"></i></a></li>
+                        {%endfor%}
+                    </ul>
+                </div><!-- End Tags -->
+
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // Function to update countdown
+    function updateCountdown() {
+        // Get the countdown element
+        var countdownElement = document.getElementById('countdown');
+
+        // Get the values from the data attributes
+        var days = countdownElement.getAttribute('data-days');
+        var hours = countdownElement.getAttribute('data-hours');
+        var minutes = countdownElement.getAttribute('data-minutes');
+        var seconds = countdownElement.getAttribute('data-seconds');
+
+        // Update the countdown text
+        countdownElement.innerText = (countdownElement.classList.contains('attending') ? 'You indicated you would like to attend, here\'s how much time you have left: ' : 'Time left: ')
+            + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes, ' + seconds + ' seconds';
+    }
+
+    // Function to update countdown values every second
+    function updateCountdownValues() {
+        // Get the countdown values from the data attributes
+        var days = parseInt(document.getElementById('countdown').getAttribute('data-days'));
+        var hours = parseInt(document.getElementById('countdown').getAttribute('data-hours'));
+        var minutes = parseInt(document.getElementById('countdown').getAttribute('data-minutes'));
+        var seconds = parseInt(document.getElementById('countdown').getAttribute('data-seconds'));
+
+        // Update the values
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                if (hours > 0) {
+                    hours--;
+                    minutes = 59;
+                    seconds = 59;
+                } else {
+                    if (days > 0) {
+                        days--;
+                        hours = 23;
+                        minutes = 59;
+                        seconds = 59;
+                    }
+                }
+            }
+        }
+
+        // Set the updated values as data attributes
+        document.getElementById('countdown').setAttribute('data-days', days);
+        document.getElementById('countdown').setAttribute('data-hours', hours);
+        document.getElementById('countdown').setAttribute('data-minutes', minutes);
+        document.getElementById('countdown').setAttribute('data-seconds', seconds);
+
+        // Update the countdown display
+        updateCountdown();
+    }
+
+    // Update countdown every second
+    setInterval(updateCountdownValues, 1000);
+</script>
+
+
+{% endblock %}

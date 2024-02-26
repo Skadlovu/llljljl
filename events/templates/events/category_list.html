@@ -1,0 +1,51 @@
+{% extends 'base.html'%}
+{%load static%}
+{% block title %}
+{{category.name}}
+{% endblock %}
+
+
+{%block content%}
+<section>
+
+</section>
+<section>
+    <div class="container">
+        <div class="section-header">
+            <h4> {{category.name}} Events</h4>
+        </div>
+        <div class="row">
+            {%if events%}
+            {% for item in events %}
+            <div class="col-lg-3">
+                <div class="post-entry-1 lg">
+                    <a href="{% url 'events:event' item.id  %}"> <img src="{{item.portrait.url}}" alt=""
+                            class="img-fluid"></a>
+                    <div class="post-meta"><span class="date"> {{item.category}}</span><span class="mx-1">
+                            &bullet;</span><span> {{item.event_date}}</span>
+                    </div>
+                    <h2> <a href="{% url 'events:event' item.id  %}"> {{item.title}}</a></h2>
+                    <div class="d-flex align-items-center author">
+                        <div class="photo">
+                            <a href="{% url 'events:user_events' item.uploaded_by.username %}"> <img src="{{ item.uploaded_by.profile.image.url }}" alt="" class="img-fluid"></a>
+                        </div>
+                        <div class="name">
+                            <h3 class="m-0 p-0"> <a href="{% url 'events:user_events' item.uploaded_by.username %}">{{item.uploaded_by}} </a></h3>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            {%endfor%}
+            {%else%}
+            <div class="container-fluid">
+                <div class="d-flex">
+                    <p> Unfortunately there are no events in this city, be the the first one to <a
+                            href="{% url 'events:create_event' %}"> <strong> add an event</strong> </a>
+                        {%endif%}
+                </div>
+            </div>
+</section>
+{% endblock %}

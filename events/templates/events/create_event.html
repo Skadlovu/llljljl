@@ -1,0 +1,53 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{%load static%}
+{% block title %}
+Post Event
+{% endblock %}
+{%block content%}
+
+<section>
+    
+</section>
+<section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{ form.media }}
+    <div class="container">
+        <div class="section-header">
+            <h3> Create Event</h3>
+            <div class="col-md-6 col-sx-6">
+                <form method="post" action="{% url 'events:create_event' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <br>
+                    {{ form|crispy }}
+                    <br>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+{% if video_form.errors %}
+<p style="color: red;">Please correct the errors below:</p>
+{{ video_form.errors }}
+{% endif %}
+
+<!-- Custom Styles -->
+<style>
+    /* Adjust the width of the date and time picker inputs as needed */
+    .datepicker {
+        width: 40%;
+        height: 40%;
+    
+    }
+
+    .timepicker {
+        width: 40%;
+        height: 40%;
+    }
+</style>
+</section>
+<section>
+    
+</section>
+{% endblock content %}
