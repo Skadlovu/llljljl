@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 from .models import Profile
 from events.models import Event
 from django.contrib.auth.views import LoginView
-from events import views
+from events.views import home
 from django.urls import reverse_lazy,reverse
 from django.http import HttpResponseRedirect,JsonResponse
-from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils import timezone
+from django.conf import settings
 
 
 
@@ -51,6 +52,33 @@ def profile(request):
 	
 
 	return render(request, 'profiles/profile.html', context)
+
+
+
+
+class CustomLoginView(LoginView):
+    success_url = settings.LOGIN_REDIRECT_URL
+    template_name = 'profiles/login.html'
+
+    def form_valid(self, form):
+        try:
+            response = super().form_valid(form)
+            next_url = self.request.GET.get('next')
+            return self.get_success_url(next_url)
+        except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Error in form_valid: {str(e)}")
+            return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
+
+    def get_success_url(self, next_url=None):
+        try:
+            if next_url and next_url != reverse_lazy('login'):
+                return next_url
+            return super().get_success_url()
+        except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Error in get_success_url: {str(e)}")
+            return JsonResponse({'error': 'An unexpected error occurred.'}, status=500)
 
 
 
